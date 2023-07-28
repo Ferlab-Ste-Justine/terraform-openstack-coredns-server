@@ -53,6 +53,7 @@ This module takes the following variables as input:
 - **dns**: Parameters to customise the dns behavior. It has the following keys:
   - **zonefiles_reload_interval**: Time interval at which the **auto** plugin should poll the zonefiles for updates. Defaults to **3s** (ie, 3 seconds).
   - **load_balance_records**: In the event that an A or AAAA record yields several ips, whether to randomize the returned order or not (with clients that only take the first ip, you can achieve some dns-level load balancing this way). Defaults to **true**.
+  - **alternate_dns_servers**: List of dns servers to use to answer all queries that are not covered by the zonefiles. It defaults to an empty list.
   - **additional_bind_ips**: The dns server will bind on the ip of the passed **network_port** argument. If it should bind to additional ips (like a floating ip), they should be specified here.
 - **chrony**: Optional chrony configuration for when you need a more fine-grained ntp setup on your vm. It is an object with the following fields:
   - **enabled**: If set the false (the default), chrony will not be installed and the vm ntp settings will be left to default.

@@ -34,7 +34,9 @@ Also, this module expects to authentify against etcd using tls certificate authe
 This module takes the following variables as input:
 
 - **name**: This should be a name that uniquely identifies this member in the cluster. 
-- **image_id**: Id of the vm image that the machine will boot from. This module has been validated against a recent version of Ubuntu Server. Your mileage may vary with other distributions.
+- **image_source**: Source of the image to provision the bastion on. It takes the following keys (only one of the two fields should be used, the other one should be empty):
+  - **image_id**: Id of the image to associate with a vm that has local storage
+  - **volume_id**: Id of a volume containing the os to associate with the vm
 - **flavor_id**: Id of the vm flavor to assign to the instance. See hardware recommendations to make an informed choice: https://etcd.io/docs/v3.4/op-guide/hardware/
 - **network_port**: Resource of type **openstack_networking_port_v2** to assign to the vm for network connectivity
 - **server_group**: Server group to assign to the node. Should be of type **openstack_compute_servergroup_v2**.

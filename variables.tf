@@ -4,9 +4,12 @@ variable "name" {
   default     = "etcd"
 }
 
-variable "image_id" {
-  description = "ID of the image the etcd instance will run on"
-  type        = string
+variable "image_source" {
+  description = "Source of the vm's image"
+  type = object({
+    image_id = string
+    volume_id = string
+  })
 }
 
 variable "flavor_id" {

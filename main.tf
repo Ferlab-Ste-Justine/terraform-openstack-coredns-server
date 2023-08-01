@@ -44,7 +44,7 @@ module "coredns_configs" {
   source = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//coredns?ref=v0.12.0"
   install_dependencies = var.install_dependencies
   dns = {
-    dns_bind_addresses = concat([var.network_port.all_fixed_ips.0], var.dns.additional_bind_ips)
+    dns_bind_addresses = [var.network_port.all_fixed_ips.0]
     observability_bind_address = var.network_port.all_fixed_ips.0
     nsid = var.name
     zonefiles_reload_interval = var.dns.zonefiles_reload_interval

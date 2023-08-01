@@ -53,13 +53,11 @@ variable "dns" {
     zonefiles_reload_interval = string
     load_balance_records = bool
     alternate_dns_servers = list(string)
-    additional_bind_ips = list(string)
   })
   default = {
     zonefiles_reload_interval = "3s"
     load_balance_records = true
     alternate_dns_servers = []
-    additional_bind_ips = []
   }
 }
 

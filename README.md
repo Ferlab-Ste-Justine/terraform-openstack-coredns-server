@@ -55,13 +55,17 @@ This module takes the following variables as input:
   - **load_balance_records**: In the event that an A or AAAA record yields several ips, whether to randomize the returned order or not (with clients that only take the first ip, you can achieve some dns-level load balancing this way). Defaults to **true**.
   - **alternate_dns_servers**: List of dns servers to use to answer all queries that are not covered by the zonefiles. It defaults to an empty list.
 - **chrony**: Optional chrony configuration for when you need a more fine-grained ntp setup on your vm. It is an object with the following fields:
-  - **enabled**: If set the false (the default), chrony will not be installed and the vm ntp settings will be left to default.
+  - **enabled**: If set to false (the default), chrony will not be installed and the vm ntp settings will be left to default.
   - **servers**: List of ntp servers to sync from with each entry containing two properties, **url** and **options** (see: https://chrony.tuxfamily.org/doc/4.2/chrony.conf.html#server)
   - **pools**: A list of ntp server pools to sync from with each entry containing two properties, **url** and **options** (see: https://chrony.tuxfamily.org/doc/4.2/chrony.conf.html#pool)
   - **makestep**: An object containing remedial instructions if the clock of the vm is significantly out of sync at startup. It is an object containing two properties, **threshold** and **limit** (see: https://chrony.tuxfamily.org/doc/4.2/chrony.conf.html#makestep)
 - **fluentbit**: Optional fluent-bit configuration to securely route logs to a fluend/fluent-bit node using the forward plugin. Alternatively, configuration can be 100% dynamic by specifying the parameters of an etcd store or git repo to fetch the configuration from. It has the following keys:
-  - **enabled**: If set the false (the default), fluent-bit will not be installed.
-  - **etcd_tag**: Tag to assign to logs coming from etcd
+  - **enabled**: If set to false (the default), fluent-bit will not be installed.
+  - **metrics**: Configuration for metrics fluentbit exposes.
+    - **enabled**: Whether to enable the metrics or not
+    - **port**: Port to expose the metrics on
+  - **coredns_tag**: Tag to assign to logs coming from coredns
+  - **coredns_updater_tag**: Tag to assign to logs coming from the coredns zonefiles updater
   - **node_exporter_tag** Tag to assign to logs coming from the prometheus node exporter
   - **forward**: Configuration for the forward plugin that will talk to the external fluend/fluent-bit node. It has the following keys:
     - **domain**: Ip or domain name of the remote fluend node.

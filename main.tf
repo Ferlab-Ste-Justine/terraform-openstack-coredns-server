@@ -1,6 +1,6 @@
 locals {
   fluentbit_updater_etcd = var.fluentbit.enabled && var.fluentbit_dynamic_config.enabled && var.fluentbit_dynamic_config.source == "etcd"
-  fluentbit_updater_git = var.fluentbit.enabled && var.fluentbit_dynamic_config.enabled && var.fluentbit_dynamic_config.source == "git"
+  fluentbit_updater_git  = var.fluentbit.enabled && var.fluentbit_dynamic_config.enabled && var.fluentbit_dynamic_config.source == "git"
   block_devices = var.image_source.volume_id != "" ? [{
     uuid                  = var.image_source.volume_id
     source_type           = "volume"
@@ -11,56 +11,57 @@ locals {
 }
 
 module "coredns_zonefiles_updater_configs" {
-  source = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//configurations-auto-updater?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//configurations-auto-updater?ref=v0.20.0"
   install_dependencies = var.install_dependencies
   filesystem = {
-    path = "/opt/coredns/zonefiles"
-    files_permission = "700"
+    path                   = "/opt/coredns/zonefiles"
+    files_permission       = "700"
     directories_permission = "700"
   }
   etcd = {
-    key_prefix = var.etcd.key_prefix
-    endpoints = var.etcd.endpoints
+    key_prefix         = var.etcd.key_prefix
+    endpoints          = var.etcd.endpoints
     connection_timeout = "10s"
-    request_timeout = "10s"
-    retry_interval = "500ms"
-    retries = 10
+    request_timeout    = "10s"
+    retry_interval     = "500ms"
+    retries            = 10
     auth = {
-      ca_certificate = var.etcd.ca_certificate
+      ca_certificate     = var.etcd.ca_certificate
       client_certificate = var.etcd.client.certificate
-      client_key = var.etcd.client.key
-      username = var.etcd.client.username
-      password = var.etcd.client.password
+      client_key         = var.etcd.client.key
+      username           = var.etcd.client.username
+      password           = var.etcd.client.password
     }
   }
   naming = {
-    binary = "coredns-zonefiles-updater"
+    binary  = "coredns-zonefiles-updater"
     service = "coredns-zonefiles-updater"
   }
   user = "coredns"
 }
 
 module "coredns_configs" {
-  source = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//coredns?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//coredns?ref=v0.24.2"
   install_dependencies = var.install_dependencies
   dns = {
-    dns_bind_addresses = [var.network_port.all_fixed_ips.0]
+    dns_bind_addresses         = [var.network_port.all_fixed_ips.0]
     observability_bind_address = var.network_port.all_fixed_ips.0
-    nsid = var.name
-    zonefiles_reload_interval = var.dns.zonefiles_reload_interval
-    load_balance_records = var.dns.load_balance_records
-    alternate_dns_servers = var.dns.alternate_dns_servers
-    forwards = var.dns.forwards
+    nsid                       = var.name
+    zonefiles_reload_interval  = var.dns.zonefiles_reload_interval
+    load_balance_records       = var.dns.load_balance_records
+    alternate_dns_servers      = var.dns.alternate_dns_servers
+    forwards                   = var.dns.forwards
+    cache_settings             = var.dns.cache_settings
   }
 }
 
 module "prometheus_node_exporter_configs" {
-  source = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//prometheus-node-exporter?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//prometheus-node-exporter?ref=v0.20.0"
   install_dependencies = var.install_dependencies
 }
 
 module "chrony_configs" {
-  source = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//chrony?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//chrony?ref=v0.20.0"
   install_dependencies = var.install_dependencies
   chrony = {
     servers  = var.chrony.servers
@@ -70,26 +71,26 @@ module "chrony_configs" {
 }
 
 module "fluentbit_updater_etcd_configs" {
-  source = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//configurations-auto-updater?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//configurations-auto-updater?ref=v0.20.0"
   install_dependencies = var.install_dependencies
   filesystem = {
-    path = "/etc/fluent-bit-customization/dynamic-config"
-    files_permission = "700"
+    path                   = "/etc/fluent-bit-customization/dynamic-config"
+    files_permission       = "700"
     directories_permission = "700"
   }
   etcd = {
-    key_prefix = var.fluentbit_dynamic_config.etcd.key_prefix
-    endpoints = var.fluentbit_dynamic_config.etcd.endpoints
+    key_prefix         = var.fluentbit_dynamic_config.etcd.key_prefix
+    endpoints          = var.fluentbit_dynamic_config.etcd.endpoints
     connection_timeout = "60s"
-    request_timeout = "60s"
-    retry_interval = "4s"
-    retries = 15
+    request_timeout    = "60s"
+    retry_interval     = "4s"
+    retries            = 15
     auth = {
-      ca_certificate = var.fluentbit_dynamic_config.etcd.ca_certificate
+      ca_certificate     = var.fluentbit_dynamic_config.etcd.ca_certificate
       client_certificate = var.fluentbit_dynamic_config.etcd.client.certificate
-      client_key = var.fluentbit_dynamic_config.etcd.client.key
-      username = var.fluentbit_dynamic_config.etcd.client.username
-      password = var.fluentbit_dynamic_config.etcd.client.password
+      client_key         = var.fluentbit_dynamic_config.etcd.client.key
+      username           = var.fluentbit_dynamic_config.etcd.client.username
+      password           = var.fluentbit_dynamic_config.etcd.client.password
     }
   }
   notification_command = {
@@ -97,18 +98,18 @@ module "fluentbit_updater_etcd_configs" {
     retries = 30
   }
   naming = {
-    binary = "fluent-bit-config-updater"
+    binary  = "fluent-bit-config-updater"
     service = "fluent-bit-config-updater"
   }
   user = "fluentbit"
 }
 
 module "fluentbit_updater_git_configs" {
-  source = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//gitsync?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//gitsync?ref=v0.20.0"
   install_dependencies = var.install_dependencies
   filesystem = {
-    path = "/etc/fluent-bit-customization/dynamic-config"
-    files_permission = "700"
+    path                   = "/etc/fluent-bit-customization/dynamic-config"
+    files_permission       = "700"
     directories_permission = "700"
   }
   git = var.fluentbit_dynamic_config.git
@@ -117,14 +118,14 @@ module "fluentbit_updater_git_configs" {
     retries = 30
   }
   naming = {
-    binary = "fluent-bit-config-updater"
+    binary  = "fluent-bit-config-updater"
     service = "fluent-bit-config-updater"
   }
   user = "fluentbit"
 }
 
 module "fluentbit_configs" {
-  source = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//fluent-bit?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//fluent-bit?ref=v0.20.0"
   install_dependencies = var.install_dependencies
   fluentbit = {
     metrics = var.fluentbit.metrics
@@ -145,39 +146,39 @@ module "fluentbit_configs" {
     forward = var.fluentbit.forward
   }
   dynamic_config = {
-    enabled = var.fluentbit_dynamic_config.enabled
+    enabled         = var.fluentbit_dynamic_config.enabled
     entrypoint_path = "/etc/fluent-bit-customization/dynamic-config/index.conf"
   }
 }
 
 locals {
   cloudinit_templates = concat([
-      {
-        filename     = "base.cfg"
-        content_type = "text/cloud-config"
-        content = templatefile(
-          "${path.module}/files/user_data.yaml.tpl", 
-          {
-            hostname = var.name
-            install_dependencies = var.install_dependencies
-          }
-        )
-      },
-      {
-        filename     = "node_exporter.cfg"
-        content_type = "text/cloud-config"
-        content      = module.prometheus_node_exporter_configs.configuration
-      },
-      {
-        filename     = "coredns_zonefiles_updater.cfg"
-        content_type = "text/cloud-config"
-        content      = module.coredns_zonefiles_updater_configs.configuration
-      },
-      {
-        filename     = "coredns.cfg"
-        content_type = "text/cloud-config"
-        content      = module.coredns_configs.configuration
-      }
+    {
+      filename     = "base.cfg"
+      content_type = "text/cloud-config"
+      content = templatefile(
+        "${path.module}/files/user_data.yaml.tpl",
+        {
+          hostname             = var.name
+          install_dependencies = var.install_dependencies
+        }
+      )
+    },
+    {
+      filename     = "node_exporter.cfg"
+      content_type = "text/cloud-config"
+      content      = module.prometheus_node_exporter_configs.configuration
+    },
+    {
+      filename     = "coredns_zonefiles_updater.cfg"
+      content_type = "text/cloud-config"
+      content      = module.coredns_zonefiles_updater_configs.configuration
+    },
+    {
+      filename     = "coredns.cfg"
+      content_type = "text/cloud-config"
+      content      = module.coredns_configs.configuration
+    }
     ],
     var.chrony.enabled ? [{
       filename     = "chrony.cfg"
@@ -203,7 +204,7 @@ locals {
 }
 
 data "cloudinit_config" "user_data" {
-  gzip = true
+  gzip          = true
   base64_encode = true
   dynamic "part" {
     for_each = local.cloudinit_templates

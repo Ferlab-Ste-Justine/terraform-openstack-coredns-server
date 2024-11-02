@@ -56,7 +56,7 @@ This module takes the following variables as input:
   - **alternate_dns_servers**: List of dns servers to use to answer all queries that are not covered by the zonefiles. It defaults to an empty list.
   - **forwards**: List of objects, each having a **domain_name** and **dns_servers**. It allows forwarding queries for specific domains to other dns servers. It defaults to an empty list.
   - **cache_settings**: List of objects for configuring cache for specific domains. Each object has the following keys:
-    - **domain_name**: The domain for which caching is enabled.
+    - **domains**: The domains for which caching is enabled.
     - **success_capacity**: Capacity for caching positive responses. Defines the maximum number of entries in the cache for successful responses for this domain.
     - **prefetch**: Number of requests before prefetching the cache entry. Allows prefetching popular items before they expire.
 - **chrony**: Optional chrony configuration for when you need a more fine-grained ntp setup on your vm. It is an object with the following fields:

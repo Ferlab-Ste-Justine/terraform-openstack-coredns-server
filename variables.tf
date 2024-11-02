@@ -7,7 +7,7 @@ variable "name" {
 variable "image_source" {
   description = "Source of the vm's image"
   type = object({
-    image_id = string
+    image_id  = string
     volume_id = string
   })
 }
@@ -34,72 +34,77 @@ variable "keypair_name" {
 
 variable "etcd" {
   description = "Parameters for the etcd backend"
-  type        = object({
-    key_prefix = string
-    endpoints = list(string)
+  type = object({
+    key_prefix     = string
+    endpoints      = list(string)
     ca_certificate = string
     client = object({
       certificate = string
-      key = string
-      username = string
-      password = string
+      key         = string
+      username    = string
+      password    = string
     })
   })
 }
 
 variable "dns" {
   description = "Parameters for the DNS server"
-  type        = object({
+  type = object({
     zonefiles_reload_interval = string
     load_balance_records      = bool
     alternate_dns_servers     = list(string)
-    forwards                  = list(object({
+    forwards = list(object({
       domain_name = string
       dns_servers = list(string)
     }))
-    cache_settings = list(object({
-      domain_name     = string 
-      success_capacity = number
-      prefetch         = number
-    }))
+    cache_settings = object({
+      domains          = list(string)
+      success_capacity = number      
+      prefetch         = number 
+    })
   })
   default = {
     zonefiles_reload_interval = "3s"
     load_balance_records      = true
     alternate_dns_servers     = []
     forwards                  = []
-    cache_settings            = []
+    cache_settings = {
+      domains          = []
+      success_capacity = 0
+      prefetch         = 0
+    }
+
   }
 }
 
 
 variable "chrony" {
   description = "Chrony configuration for ntp. If enabled, chrony is installed and configured, else the default image ntp settings are kept"
-  type        = object({
+  type = object({
     enabled = bool,
     //https://chrony.tuxfamily.org/doc/4.2/chrony.conf.html#server
     servers = list(object({
-      url = string,
+      url     = string,
       options = list(string)
     })),
     //https://chrony.tuxfamily.org/doc/4.2/chrony.conf.html#pool
     pools = list(object({
-      url = string,
+      url     = string,
       options = list(string)
     })),
     //https://chrony.tuxfamily.org/doc/4.2/chrony.conf.html#makestep
     makestep = object({
       threshold = number
-      limit = number
+      limit     = number
     })
   })
   default = {
     enabled = false
     servers = []
-    pools = []
+    pools   = []
     makestep = {
       threshold = 0
-      limit = 0
+      limit     = 0
     }
   }
 }
@@ -107,37 +112,37 @@ variable "chrony" {
 variable "fluentbit" {
   description = "Fluent-bit configuration"
   type = object({
-    enabled = bool
-    coredns_tag = string
+    enabled             = bool
+    coredns_tag         = string
     coredns_updater_tag = string
-    node_exporter_tag = string
+    node_exporter_tag   = string
     metrics = object({
       enabled = bool
       port    = number
     })
     forward = object({
-      domain = string
-      port = number
-      hostname = string
+      domain     = string
+      port       = number
+      hostname   = string
       shared_key = string
-      ca_cert = string
+      ca_cert    = string
     })
   })
   default = {
-    enabled = false
-    coredns_tag = ""
+    enabled             = false
+    coredns_tag         = ""
     coredns_updater_tag = ""
-    node_exporter_tag = ""
+    node_exporter_tag   = ""
     metrics = {
       enabled = false
-      port = 0
+      port    = 0
     }
     forward = {
-      domain = ""
-      port = 0
-      hostname = ""
+      domain     = ""
+      port       = 0
+      hostname   = ""
       shared_key = ""
-      ca_cert = ""
+      ca_cert    = ""
     }
   }
 }
@@ -147,23 +152,23 @@ variable "fluentbit_dynamic_config" {
   type = object({
     enabled = bool
     source  = string
-    etcd    = object({
+    etcd = object({
       key_prefix     = string
       endpoints      = list(string)
       ca_certificate = string
-      client         = object({
+      client = object({
         certificate = string
         key         = string
         username    = string
         password    = string
       })
     })
-    git     = object({
+    git = object({
       repo             = string
       ref              = string
       path             = string
       trusted_gpg_keys = list(string)
-      auth             = object({
+      auth = object({
         client_ssh_key         = string
         server_ssh_fingerprint = string
       })
@@ -171,24 +176,24 @@ variable "fluentbit_dynamic_config" {
   })
   default = {
     enabled = false
-    source = "etcd"
+    source  = "etcd"
     etcd = {
       key_prefix     = ""
       endpoints      = []
       ca_certificate = ""
-      client         = {
+      client = {
         certificate = ""
         key         = ""
         username    = ""
         password    = ""
       }
     }
-    git  = {
+    git = {
       repo             = ""
       ref              = ""
       path             = ""
       trusted_gpg_keys = []
-      auth             = {
+      auth = {
         client_ssh_key         = ""
         server_ssh_fingerprint = ""
       }
@@ -203,6 +208,6 @@ variable "fluentbit_dynamic_config" {
 
 variable "install_dependencies" {
   description = "Whether to install all dependencies in cloud-init"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }

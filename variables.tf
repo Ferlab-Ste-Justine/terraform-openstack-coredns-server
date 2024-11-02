@@ -48,23 +48,30 @@ variable "etcd" {
 }
 
 variable "dns" {
-  description = "Parameters for the dns server"
+  description = "Parameters for the DNS server"
   type        = object({
     zonefiles_reload_interval = string
-    load_balance_records = bool
-    alternate_dns_servers = list(string)
-    forwards = list(object({
-      domain_name = string,
+    load_balance_records      = bool
+    alternate_dns_servers     = list(string)
+    forwards                  = list(object({
+      domain_name = string
       dns_servers = list(string)
+    }))
+    cache_settings = list(object({
+      domain_name     = string 
+      success_capacity = number
+      prefetch         = number
     }))
   })
   default = {
     zonefiles_reload_interval = "3s"
-    load_balance_records = true
-    alternate_dns_servers = []
-    forwards = []
+    load_balance_records      = true
+    alternate_dns_servers     = []
+    forwards                  = []
+    cache_settings            = []
   }
 }
+
 
 variable "chrony" {
   description = "Chrony configuration for ntp. If enabled, chrony is installed and configured, else the default image ntp settings are kept"

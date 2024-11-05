@@ -41,7 +41,7 @@ module "coredns_zonefiles_updater_configs" {
 }
 
 module "coredns_configs" {
-  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//coredns?ref=v0.24.3"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//coredns?ref=v0.24.4"
   install_dependencies = var.install_dependencies
   dns = {
     dns_bind_addresses         = [var.network_port.all_fixed_ips.0]

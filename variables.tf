@@ -58,9 +58,12 @@ variable "dns" {
       dns_servers = list(string)
     }))
     cache_settings = object({
-      domains          = list(string)
-      success_capacity = number      
-      prefetch         = number 
+      domains  = list(string)
+      max_ttl  = number  
+      prefetch = object({ 
+        amount   = number    
+        duration = string 
+      })
     })
   })
   default = {
@@ -69,11 +72,13 @@ variable "dns" {
     alternate_dns_servers     = []
     forwards                  = []
     cache_settings = {
-      domains          = []
-      success_capacity = 0
-      prefetch         = 0
+      domains  = []         
+      max_ttl  = 86400    
+      prefetch = {                    
+        amount   = 0                 
+        duration = ""    
+      }
     }
-
   }
 }
 

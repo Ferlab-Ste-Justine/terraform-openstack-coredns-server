@@ -55,10 +55,12 @@ This module takes the following variables as input:
   - **load_balance_records**: In the event that an A or AAAA record yields several ips, whether to randomize the returned order or not (with clients that only take the first ip, you can achieve some dns-level load balancing this way). Defaults to **true**.
   - **alternate_dns_servers**: List of dns servers to use to answer all queries that are not covered by the zonefiles. It defaults to an empty list.
   - **forwards**: List of objects, each having a **domain_name** and **dns_servers**. It allows forwarding queries for specific domains to other dns servers. It defaults to an empty list.
-  - **cache_settings**: List of objects for configuring cache for specific domains. Each object has the following keys:
+  - **cache_settings**: Object for configuring cache for specific domains. It has the following keys:
     - **domains**: The domains for which caching is enabled.
-    - **success_capacity**: Capacity for caching positive responses. Defines the maximum number of entries in the cache for successful responses for this domain.
-    - **prefetch**: Number of requests before prefetching the cache entry. Allows prefetching popular items before they expire.
+    - **max_ttl**: The global TTL for cached entries, defining the maximum duration entries are kept in the cache.
+    - **prefetch**: An optional object with the following keys:
+      - **amount**: The number of requests before prefetching the cache entry. Helps reduce latency for frequently requested entries.
+      - **duration**: The time interval between requests needed to activate prefetching. If left empty, prefetching is disabled.
 - **chrony**: Optional chrony configuration for when you need a more fine-grained ntp setup on your vm. It is an object with the following fields:
   - **enabled**: If set to false (the default), chrony will not be installed and the vm ntp settings will be left to default.
   - **servers**: List of ntp servers to sync from with each entry containing two properties, **url** and **options** (see: https://chrony.tuxfamily.org/doc/4.2/chrony.conf.html#server)

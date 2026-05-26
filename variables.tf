@@ -57,13 +57,23 @@ variable "dns" {
       domain_name = string
       dns_servers = list(string)
     }))
-    cache_settings = object({
+    cache = optional(object({
       domains  = list(string)
-      max_ttl  = number  
-      prefetch = object({ 
-        amount   = number    
-        duration = string 
+      max_ttl  = optional(number, 86400)
+      prefetch = optional(object({
+        amount   = number
+        duration = string
+      }), {
+        amount   = 0
+        duration = ""
       })
+    }), {
+      domains  = []
+      max_ttl  = 86400
+      prefetch = {
+        amount   = 0
+        duration = ""
+      }
     })
   })
   default = {
@@ -71,7 +81,7 @@ variable "dns" {
     load_balance_records      = true
     alternate_dns_servers     = []
     forwards                  = []
-    cache_settings = {
+    cache = {
       domains  = []         
       max_ttl  = 86400    
       prefetch = {                    
@@ -175,6 +185,7 @@ variable "fluentbit_dynamic_config" {
       trusted_gpg_keys = list(string)
       auth = object({
         client_ssh_key         = string
+        client_ssh_user        = optional(string, "")
         server_ssh_fingerprint = string
       })
     })
@@ -200,6 +211,7 @@ variable "fluentbit_dynamic_config" {
       trusted_gpg_keys = []
       auth = {
         client_ssh_key         = ""
+        client_ssh_user        = ""
         server_ssh_fingerprint = ""
       }
     }

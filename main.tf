@@ -11,7 +11,7 @@ locals {
 }
 
 module "coredns_zonefiles_updater_configs" {
-  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//configurations-auto-updater?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//configurations-auto-updater?ref=v0.50.3"
   install_dependencies = var.install_dependencies
   filesystem = {
     path                   = "/opt/coredns/zonefiles"
@@ -41,7 +41,7 @@ module "coredns_zonefiles_updater_configs" {
 }
 
 module "coredns_configs" {
-  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//coredns?ref=v0.24.4"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//coredns?ref=v0.50.3"
   install_dependencies = var.install_dependencies
   dns = {
     dns_bind_addresses         = [var.network_port.all_fixed_ips.0]
@@ -51,17 +51,17 @@ module "coredns_configs" {
     load_balance_records       = var.dns.load_balance_records
     alternate_dns_servers      = var.dns.alternate_dns_servers
     forwards                   = var.dns.forwards
-    cache_settings             = var.dns.cache_settings
+    cache                      = var.dns.cache
   }
 }
 
 module "prometheus_node_exporter_configs" {
-  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//prometheus-node-exporter?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//prometheus-node-exporter?ref=v0.50.3"
   install_dependencies = var.install_dependencies
 }
 
 module "chrony_configs" {
-  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//chrony?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//chrony?ref=v0.50.3"
   install_dependencies = var.install_dependencies
   chrony = {
     servers  = var.chrony.servers
@@ -71,7 +71,7 @@ module "chrony_configs" {
 }
 
 module "fluentbit_updater_etcd_configs" {
-  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//configurations-auto-updater?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//configurations-auto-updater?ref=v0.50.3"
   install_dependencies = var.install_dependencies
   filesystem = {
     path                   = "/etc/fluent-bit-customization/dynamic-config"
@@ -105,7 +105,7 @@ module "fluentbit_updater_etcd_configs" {
 }
 
 module "fluentbit_updater_git_configs" {
-  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//gitsync?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//gitsync?ref=v0.50.3"
   install_dependencies = var.install_dependencies
   filesystem = {
     path                   = "/etc/fluent-bit-customization/dynamic-config"
@@ -125,7 +125,7 @@ module "fluentbit_updater_git_configs" {
 }
 
 module "fluentbit_configs" {
-  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//fluent-bit?ref=v0.20.0"
+  source               = "git::https://github.com/Ferlab-Ste-Justine/terraform-cloudinit-templates.git//fluent-bit?ref=v0.50.3"
   install_dependencies = var.install_dependencies
   fluentbit = {
     metrics = var.fluentbit.metrics
@@ -143,7 +143,8 @@ module "fluentbit_configs" {
         service = "node-exporter.service"
       }
     ]
-    forward = var.fluentbit.forward
+    log_files = []
+    forward   = var.fluentbit.forward
   }
   dynamic_config = {
     enabled         = var.fluentbit_dynamic_config.enabled
